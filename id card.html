@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID Card Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0066CC; 
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #FFFFFF; /* White */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0066CC; 
+        }
+
+        input, button {
+            display: block;
+            width: calc(100% - 20px); 
+            margin: 10px auto; 
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #0066CC; 
+            border-radius: 4px;
+        }
+
+        input {
+            background-color: #F0F0F0; 
+        }
+
+        button {
+            background-color: #0066CC; 
+            color: #FFFFFF; 
+            cursor: pointer;
+        }
+
+        #preview {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+
+        #logoContainer {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ID Card Generator</h1>
+        <input type="text" id="name" placeholder="Enter Name">
+        <input type="text" id="phoneNumber" placeholder="Enter Phone Number">
+        <input type="text" id="address" placeholder="Enter Address">
+        <input type="date" id="dob" placeholder="Enter Date of Birth">
+        <div id="logoContainer">
+            <input type="file" id="logo" accept="image/*">
+        </div>
+        <button onclick="generateAndDownloadIDCard()">Generate & Download ID Card (PNG)</button>
+        <div id="preview"></div>
+    </div>
+    <script>
+        function generateAndDownloadIDCard() {
+            var name = document.getElementById("name").value;
+            var phoneNumber = document.getElementById("phoneNumber").value;
+            var address = document.getElementById("address").value;
+            var dob = document.getElementById("dob").value;
+            var logo = document.getElementById("logo").files[0];
+    
+            if (logo && (logo.type === 'image/jpeg' || logo.type === 'image/png')) {
+                var canvas = document.createElement('canvas');
+                canvas.width = 800;
+                canvas.height = 520;
+                var ctx = canvas.getContext('2d');
+    
+                ctx.fillStyle = '#EFEFEF'; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+                ctx.fillStyle = '#0066CC';
+                ctx.fillRect(0, 0, canvas.width, 60);
+    
+                ctx.fillStyle = '#0066CC';
+                ctx.fillRect(0, canvas.height - 40, canvas.width, 40);
+    
+                ctx.fillStyle = '#FFFFFF';
+                ctx.textAlign = 'center';
+    
+                ctx.font = 'bold 24px Arial';
+                ctx.fillText('AKASKA PRIVATE LIMITED', canvas.width / 2, 30);
+    
+                var logoImg = new Image();
+                logoImg.src = URL.createObjectURL(logo);
+                logoImg.onload = function () {
+                    var photoX = (canvas.width - 200) / 2;
+                    var photoY = 80;
+                    ctx.drawImage(logoImg, photoX, photoY, 200, 200);
+    
+                    ctx.fillStyle = '#000000'; 
+                    ctx.font = '18px Arial';
+                    ctx.fillText('Name: ' + name, canvas.width / 2, 320);
+                    ctx.fillText('Phone Number: ' + phoneNumber, canvas.width / 2, 350);
+                    ctx.fillText('Address: ' + address, canvas.width / 2, 380);
+                    ctx.fillText('Date of Birth: ' + dob, canvas.width / 2, 410);
+    
+                    ctx.fillStyle = '#FFFFFF'; 
+                    ctx.font = 'italic 14px Arial';
+                    ctx.fillText('Temporary ID Card', canvas.width / 2, canvas.height - 15);
+    
+                    var imgData = canvas.toDataURL('image/png');
+                    var a = document.createElement("a");
+                    a.href = imgData;
+                    a.download = "id_card.png";
+                    a.click();
+                };
+            } else {
+                alert('Please select a valid image file (jpg or png)');
+            }
+        }
+    </script>
+    
+</body>
+</html>
